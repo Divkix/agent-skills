@@ -1,5 +1,5 @@
 ---
-name: codebase-cleanup
+name: code-cleanup
 description: >
   Deep codebase cleanup using 8 focused subagents: deduplication (DRY), shared type consolidation,
   unused code removal (knip), circular dependency resolution (madge), type strengthening (no any/unknown),
