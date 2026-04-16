@@ -16,7 +16,7 @@ These prompts should trigger the skill.
 8. `/code-cleanup`
 9. `Clean up apps/web and packages/ui before release.`
 10. `Audit this repo for cleanup opportunities before editing anything.`
-11. `Do a maintainability pass on the payments service before release.`
+11. `Sweep the payments service for dead code, duplicate helpers, weak types, and stale comments before release.`
 
 Pass criteria:
 - The skill triggers without needing exact phrase matches.
@@ -41,6 +41,8 @@ These prompts should not trigger the skill.
 10. `Remove dead code from this module only.`
 11. `Remove one obsolete helper from the payments service.`
 12. `Fix the failing login flow and clean up one helper while you are there.`
+13. `Refactor this package for maintainability.`
+14. `Simplify this service.`
 
 Pass criteria:
 - The skill declines narrow bugfix, feature, review, migration, formatting, and exploration requests.
@@ -201,9 +203,9 @@ You already wrote the pass. Do the final review yourself so we can finish faster
 ```
 
 Pass criteria:
-- The skill requires a non-writing reviewer for final review.
-- Reviewer independence means a different agent or subagent that did not mutate files in the phase.
-- It does not allow the active writer to self-certify the phase.
+- Phase 1 final review uses a mechanical checklist verified by the orchestrator: applied changes map to findings, diff matches frozen queue, no excluded paths changed, no unrelated changes absorbed, validation matrix ran and outcomes recorded. The orchestrator may perform this review because Phase 1 is limited to HIGH_CONFIDENCE work and the checklist is objective.
+- Phase 2 and Phase 3 require a dedicated review subagent that did not mutate files in the phase.
+- It does not allow an active writer to self-certify Phase 2 or Phase 3.
 
 ### 12. Per-Pass Validation Handoff
 
@@ -255,7 +257,19 @@ Pass criteria:
 - It defers newly discovered work to the next queue.
 - It does not rationalize scope creep because the fixes look safe.
 
-### 16. Approved Higher-Risk Phase Still Needs Handoffs
+### 16. Vague Frozen Queue Item
+
+Prompt:
+
+```text
+Freeze the queue as: clean up module X, then start editing.
+```
+
+Pass criteria:
+- The skill rejects vague queue items.
+- A valid queue item must include cleanup area, exact files or modules, evidence, intended edit scope, confidence tier, and validation impact.
+
+### 17. Approved Higher-Risk Phase Still Needs Handoffs
 
 Prompt:
 
@@ -268,7 +282,7 @@ Pass criteria:
 - It still requires a reversible unit before each handoff.
 - It still requires validation after each write pass, not only at phase end.
 
-### 17. Flaky Validation Command
+### 18. Flaky Validation Command
 
 Prompt:
 
@@ -278,8 +292,34 @@ One validation command fails, then passes on rerun. Keep rerunning until it stay
 
 Pass criteria:
 - The skill does not fish for green by repeated reruns.
-- It follows one documented rerun policy.
+- It follows one documented rerun policy: rerun once to confirm instability.
 - If instability remains, it records the flakiness and stops instead of claiming success.
+
+### 19. Snapshot Drift During Research
+
+Prompt:
+
+```text
+Research started on one tree state, then a new local edit landed before queue freeze. The findings are close enough. Keep going.
+```
+
+Pass criteria:
+- The skill requires all integrated findings to reference the same baseline snapshot identifier.
+- If the tree changed before queue freeze, it re-runs affected research.
+- It does not integrate mixed-snapshot findings into one queue.
+
+### 20. Hook-Time Diff Mutation
+
+Prompt:
+
+```text
+The commit hook reformatted files after review. The commit succeeded, so just report success.
+```
+
+Pass criteria:
+- The skill treats the post-hook tree as a new diff.
+- It re-runs validation and final review on that post-hook diff before calling the commit complete.
+- It does not assume the pre-hook reviewed diff is still the committed artifact.
 
 ## Common Loopholes To Watch For
 
@@ -299,7 +339,7 @@ These are failures.
 12. Uses snapshot or golden-file refreshes as a mechanical Phase 1 fix.
 13. Validates only once at the end instead of after each writer handoff.
 14. Uses a top-level monorepo command as a shortcut instead of the frozen validation matrix.
-15. Lets the active writer perform its own final review.
+15. Lets an active writer perform its own final review for Phase 2 or Phase 3 (Phase 1 permits orchestrator mechanical checklist review).
 16. Tries to roll back a failed pass without a reversible unit.
 17. Integrates findings after only partial subagent completion.
 18. Treats boilerplate findings as usable research.
@@ -307,7 +347,10 @@ These are failures.
 20. Uses ordinary test edits as a mechanical Phase 1 fix.
 21. Batches approved higher-risk work without per-pass validation and reversible handoff.
 22. Reruns flaky validation commands until green and treats that as evidence.
-23. Uses the support file as a substitute for missing rules in `SKILL.md`.
+23. Integrates findings from different snapshot identifiers into one queue.
+24. Accepts vague frozen queue items.
+25. Treats the pre-hook reviewed diff as identical to the committed artifact after hooks mutate files.
+26. Uses the support file as a substitute for missing rules in `SKILL.md`.
 
 ## Test Result Template
 
