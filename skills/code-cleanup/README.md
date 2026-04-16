@@ -1,66 +1,50 @@
 # Code Cleanup Skill
 
-Deep codebase cleanup using 8 specialized subagents with tiered execution.
+Disciplined repo-wide cleanup for technical debt and maintainability work.
 
-## What It Does
+## Use It For
 
-This skill orchestrates a full-repo cleanup with 8 dedicated subagents:
+- repo-wide or monorepo cleanup passes
+- broad multi-package cleanup sweeps inside a monorepo
+- dead code, duplication, circular dependencies, weak types, legacy paths, and stale comments
+- code hygiene or maintainability sweeps before release
+- repo-wide cleanup audits before editing
+- explicit `/code-cleanup` invocation
 
-1. **DRY / Deduplication** — Consolidate repeated logic where it reduces complexity
-2. **Type Consolidation** — Merge duplicate/shared type definitions
-3. **Unused Code Removal** — Remove dead code using `knip` (or language equivalents)
-4. **Circular Dependency Resolution** — Break import cycles using `madge` (or equivalent)
-5. **Type Strengthening** — Replace weak types (`any`/`unknown` equivalents) with concrete types
-6. **Error Handling Audit** — Remove unnecessary defensive wrappers and error-hiding patterns
-7. **Legacy Cleanup** — Remove deprecated, fallback, and obsolete paths
-8. **Slop / Comment Cleanup** — Remove AI slop, dead stubs, and unhelpful comments
+## Do Not Use It For
 
-## Usage
-
-Use either command-style invocation or natural language:
-
-```
-> /code-cleanup
-> clean up my codebase
-> refactor everything and remove unused code
-> fix types and remove dead code
-```
+- single bugfixes
+- feature work
+- pure formatting
+- code search, explanation, or review-only requests
 
 ## Default Behavior
 
-- Performs an auto-inferred preflight by inspecting the repo first.
-- Uses a **full-repo sweep** by default (with explicit exclusions).
-- Spawns **all 8 subagents** automatically.
-- Allows subagents to research in parallel, but applies file changes **one at a time** in a safe integration order.
-- Requires each subagent to provide:
-  - detailed research,
-  - critical assessment,
-  - high-confidence recommendations,
-  - applied high-confidence changes during its write turn.
+- runs 8 cleanup areas with an initial read-only research pass
+- auto-applies only `HIGH_CONFIDENCE` changes in Phase 1
+- keeps `RECOMMENDED` and `AGGRESSIVE` work opt-in after Phase 1 reports the queue
+- uses one active writer at a time in a fixed integration order
+- re-researches stale findings before later write passes touch changed files or affected modules
+- records baseline validation and blocks on regressions
 
-## Apply Tiers
+## Cleanup Areas
 
-- **High-confidence (default auto-apply)**: Mechanical and low-risk changes only.
-- **Recommended (opt-in)**: Medium-risk items held for explicit approval.
-- **Aggressive (opt-in)**: High-risk restructures held for explicit approval.
+1. DRY / deduplication
+2. Shared type consolidation
+3. Unused code removal
+4. Circular dependency cleanup
+5. Weak type strengthening
+6. Error handling audit
+7. Legacy / deprecated / fallback cleanup
+8. Noise / obsolete comment cleanup
 
-After high-confidence completion, the skill reports recommended and aggressive queues and can execute either queue if explicitly requested.
+## Safety Rules
 
-## Safe Integration Order
+- excludes generated and vendor paths by default
+- does not overwrite unrelated local changes
+- does not treat `commit everything` as permission to stage unrelated files
+- requires final review before completion
 
-The write phase runs in this order to avoid consolidating dead or unstable code too early:
+## Skill Testing
 
-`Types -> Unused -> Circular -> DRY -> Strengthen -> Legacy -> Errors -> Comments`
-
-## Validation and Review
-
-- Runs repo validation after each sequential integration pass (type/lint/test/build as available).
-- Re-runs dead-code and cycle checks where applicable.
-- Runs a mandatory final review pass after each phase.
-- Stops on validation failure and reports what needs manual decisions.
-
-## Tooling
-
-- **TypeScript/JS**: `knip`, `madge --circular`, `tsc`/project checks
-- **Go**: `go vet`, `staticcheck`, `deadcode`, `goda`
-- **Python**: `vulture` and project test/lint checks
+Use [`testing-scenarios.md`](./testing-scenarios.md) to pressure-test the skill with RED/GREEN/REFACTOR scenarios. That file validates the skill and is not required for normal runtime use.
