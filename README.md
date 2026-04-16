@@ -7,13 +7,7 @@ Personal collection of AI agent skills for OpenCode and compatible coding agents
 Install skills using the [skills.sh](https://skills.sh) CLI:
 
 ```bash
-bunx skills add code-cleanup
-```
-
-Or install directly from this repo:
-
-```bash
-bunx skills add Divkix/agent-skills/code-cleanup
+npx skills add divkix/agent-skills --skill code-cleanup
 ```
 
 ## Available Skills
