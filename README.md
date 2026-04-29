@@ -15,6 +15,7 @@ npx skills add divkix/agent-skills --skill code-cleanup
 | Skill | Description |
 |-------|-------------|
 | [code-cleanup](./skills/code-cleanup/) | Deep codebase cleanup using 8 focused subagents |
+| [security-review](./skills/security-review/) | Full-codebase defensive security audit with 5-phase pipeline |
 
 ## Repository Structure
 
@@ -23,6 +24,15 @@ skills/
 ├── code-cleanup/
 │   ├── SKILL.md      # Skill definition (for AI agents)
 │   └── README.md     # Human documentation
+├── security-review/
+│   ├── SKILL.md      # Skill definition (for AI agents)
+│   ├── README.md     # Human documentation
+│   └── references/   # Supporting docs for the skill
+│       ├── inventory.md
+│       ├── attack-surface.md
+│       ├── scanners.md
+│       ├── vuln-patterns.md
+│       └── platform-checks.md
 └── ...
 ```
 
