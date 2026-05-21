@@ -1,7 +1,6 @@
 ---
 name: brand-naming
 version: 1.0.0
-compatibility: opencode
 description: Generate viral, memorable brand names for companies, products, and features using Lexicon Branding's sound-symbolism methodology. Triggers on "name my brand", "brand naming", "product naming", "tagline help", "company name ideas", or /brand-naming.
 ---
 

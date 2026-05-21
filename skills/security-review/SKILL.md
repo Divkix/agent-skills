@@ -1,7 +1,6 @@
 ---
 name: security-audit
 version: 1.0.0
-compatibility: opencode
 description: Autonomous full-codebase defensive security auditor. Use this skill whenever the user asks to audit, review, or analyze a codebase for security vulnerabilities, or invokes `/security-audit`. Triggers include phrases like "security audit", "security review", "find vulnerabilities", "check for security issues", "pentest the code", "is this secure", "audit this repo", "check for secrets", "OWASP review", or any request to scan a project for security flaws, hardcoded secrets, auth bugs, injection risks, or dependency vulnerabilities. Also triggers when the user uploads or references a codebase and asks about its security posture. Works with any stack — web apps, APIs, serverless, Cloudflare Workers, backend services, monorepos.
 ---
 
