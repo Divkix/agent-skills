@@ -16,6 +16,7 @@ npx skills add divkix/agent-skills --skill code-cleanup
 |-------|-------------|
 | [code-cleanup](./skills/code-cleanup/) | Deep codebase cleanup using 8 focused subagents |
 | [security-review](./skills/security-review/) | Full-codebase defensive security audit with 5-phase pipeline |
+| [brand-naming](./skills/brand-naming/) | Generate viral, memorable brand names using Lexicon Branding's sound-symbolism methodology |
 
 ## Repository Structure
 
@@ -33,6 +34,12 @@ skills/
 │       ├── scanners.md
 │       ├── vuln-patterns.md
 │       └── platform-checks.md
+├── brand-naming/
+│   ├── SKILL.md      # Skill definition (for AI agents)
+│   └── references/   # Supporting docs for the skill
+│       ├── sound-symbolism.md
+│       ├── naming-rules.md
+│       └── creative-territories.md
 └── ...
 ```
 
