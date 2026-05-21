@@ -1,7 +1,7 @@
 ---
 name: brand-naming
 version: 1.0.0
-description: Generate viral, memorable brand names for companies, products, and features using Lexicon Branding's sound-symbolism methodology. Triggers on "name my brand", "brand naming", "product naming", "tagline help", "company name ideas", or /brand-naming.
+description: Generate viral, memorable brand names for companies, products, and features using Lexicon Branding's sound-symbolism methodology. Triggers on "name my brand", "brand naming", "product naming", "tagline help", "company name ideas", "startup name", "naming agency", "help me name", "suggest a name", "name ideas", "what to name", "naming system", "brand architecture", "rename help", or /brand-naming. Also use for /brand-naming quick and /brand-naming refine.
 ---
 
 # Brand Naming
@@ -56,6 +56,8 @@ Names must pass the "bar test" — can someone overhear it across a noisy room a
 
 ## Process
 
+Before generating names, read `references/naming-rules.md` for the 8 essential naming rules. Names must not violate any rule.
+
 ### Phase 1: Strategic Brief (Runs for `/brand-naming`)
 
 The model should ask ALL of these questions, one at a time:
@@ -81,6 +83,8 @@ The model should ask ALL of these questions, one at a time:
 
 If the user invokes `/brand-naming quick`, they provide all answers in one prompt and the model proceeds directly to Phase 2.
 
+Before Phase 2, read `references/creative-territories.md` for the five creative territories, selection patterns, and generator heuristics.
+
 ### Phase 2: High‑Volume Creative Generation
 
 Based on the brief, generate **30‑50 names** organized into creative territories. Each name must include a one‑line rationale connecting it to the brief.
@@ -96,6 +100,8 @@ Based on the brief, generate **30‑50 names** organized into creative territori
 **Tagline pairing (if requested):** For the top 5 generated names, the model provides 2‑3 tagline options each. The tagline should feel like an extension of the name's emotional territory.
 
 Cross‑check each name against the Global Safety rule. Flag high‑risk candidates with [RISK: potential issue in X language].
+
+Before Phase 3 refinement, read `references/sound-symbolism.md` for the expanded phoneme‑to‑perception mapping table. Apply phoneme analysis on every new name when the chosen territory is Invented/Neological or Sound‑Symbolic.
 
 ### Phase 3: Refinement Loop
 
@@ -129,18 +135,6 @@ For the user's shortlist (top 5‑10 names), the model should provide:
 **Good:** "Sonos — A constructed palindrome that reads the same upside down. Pure sound symbolism: the long 'o' vowels suggest openness and warmth, while the 's' sibilants suggest smoothness of motion. A name with no pre‑existing meaning to pollute the brand."
 
 Every name must have a rationale. Every rationale must reference at least one of the core principles or sound‑symbolic patterns.
-
-## Sound Symbolism Reference
-
-Read `references/sound-symbolism.md` for the expanded phoneme‑to‑perception mapping table.
-
-## Creative Territories Reference
-
-Read `references/creative-territories.md` for the expanded creative territories with examples and generator heuristics.
-
-## Naming Rules Reference
-
-Read `references/naming-rules.md` for Lexicon's 8 essential rules for naming products. The model must generate names that do NOT violate any of these rules.
 
 ## Final Report Template
 
@@ -178,4 +172,3 @@ End every run with:
 - If the user has a domain already, ask if they want the name to "match" it or if they're open to changing domains.
 - On every naming run, check for any naming trends that might make the name feel dated in 2‑3 years (e.g., overuse of "AI," "-ify," "me," "-ly" suffixes, "App" in names). Flag these as trend‑risky.
 - Avoid names that rely on a single spelling that isn't intuitive. If a name can be spelled multiple ways, test the most likely misspellings.
-- Likely trigger keywords: "brand naming", "name my brand", "product naming", "naming agency", "startup name", "company name ideas", "tagline ideas", "naming system", "brand architecture naming".
