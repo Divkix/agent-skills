@@ -4,13 +4,13 @@
 - **Dirty overlapping file**: stop or downgrade unless ownership is clear.
 - **Stale research** (including indirect invalidation through upstream/downstream module changes): re-research before writing.
 - **Validation regression**: fix within the current pass or revert or defer that pass.
-- **Rollback**: must target only the active pass by using its reversible unit. Do not guess at manual partial reverts on a dirty tree.
+- **Rollback**: reset to the checkpoint taken before the failing pass (this also unwinds later passes that built on it); redo from there. Do not guess at manual partial reverts on a dirty tree.
 - **Snapshot or golden-file update required to make validation green**: downgrade to `REVIEW` unless the user explicitly requested that refresh.
 - **Uncertain dynamic reference**: downgrade to `REVIEW` or leave untouched.
 - **True conflict with concurrent human edits**: stop and ask.
 - **Pre-existing staged hunks in a claimed file**: do not absorb them silently. Either preserve them outside the cleanup commit or stop. Exclude the file or prove hunk-level isolation before writing.
 - **Cross-language boundary file in the proposed diff**: exclude the file or downgrade the entire item to `REVIEW`.
-- **Subagent failed to launch, timed out, or returned non-conforming output**: stop the phase. Never integrate a partial research set.
+- **Research gap** (a subagent failed, timed out, or returned an unusable report; or an inline area could not be investigated): re-run that area. Never integrate a partial research set as if it were complete.
 - **Repo size exceeds 20,000 files in scope**: stop and require explicit scoping from the user before proceeding.
 
 ### Commit Hook Handling

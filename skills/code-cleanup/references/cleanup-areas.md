@@ -1,6 +1,6 @@
 ## Subagent Map
 
-The 8 areas below are listed in Safe Integration Order. Each subagent owns exactly one area and returns output matching the Subagent Output Schema.
+The 8 areas below are listed in Safe Integration Order. On the parallel-subagent path, each research agent owns one area (or a merged cluster of entangled areas) and returns the report shape in `subagent-schema.md`; on the inline path one investigator covers every area with signal. Areas 3–6 (cycles, type consolidation, weak types, duplication) often form one entangled cluster around the same modules — research them together, but still apply edits in Safe Integration Order.
 
 ### 1. Unused Code Removal
 
@@ -46,4 +46,4 @@ The 8 areas below are listed in Safe Integration Order. Each subagent owns exact
 - Remove stale migration notes, dead stubs, leftover debug prints, and AI slop.
 - Preserve comments that explain non-obvious intent, constraints, or tradeoffs.
 
-If a subagent finds nothing worth changing, it must still return a schema-conforming output with `status: NO_CHANGES` and a `reason`.
+Record an explicit `NO_CHANGES` with a reason for any area that has signal but yields nothing applicable. An area with no signal at all needs no investigation.

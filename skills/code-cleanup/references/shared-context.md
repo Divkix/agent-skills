@@ -1,6 +1,6 @@
-## Shared Context for Every Subagent
+## Shared Context for Research Subagents
 
-The orchestrator injects this full block into every subagent spawning prompt. Subagent context windows start empty — nothing is inherited from the parent. On every subagent invocation, pass this entire block in the prompt string.
+Used **only on the parallel-subagent path**. Subagent context windows start empty — nothing is inherited from the orchestrator — so when you spawn research agents, inject this entire block into every spawning prompt, on every invocation. On the inline/serial path there are no subagents and nothing to inject; the orchestrator already holds this context.
 
 ```text
 CODEBASE CONTEXT:
@@ -11,7 +11,6 @@ CODEBASE CONTEXT:
 - Do NOT touch: {exclusion_list}
 - Cross-language boundary files: {boundary_files}
 - Dirty files before cleanup: {dirty_files}
-- Baseline snapshot ID: {snapshot_id}
 - Files in scope: {files_in_scope_count}
 - Validation commands: {validation_commands}
 - Baseline validation failures: {baseline_failures}
@@ -20,6 +19,5 @@ CODEBASE CONTEXT:
 - Active write owner: {cleanup_area_name | none}
 
 REQUIRED OUTPUT:
-Return a single Markdown document matching the Subagent Output Schema in SKILL.md.
-Non-conforming output blocks queue integration.
+Return a single Markdown document matching the report shape in references/subagent-schema.md.
 ```

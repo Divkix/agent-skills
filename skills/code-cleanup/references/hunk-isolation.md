@@ -1,41 +1,32 @@
-## Write Ownership and Snapshot Invalidation
+## Write Ownership and Hunk Isolation
 
-- All research findings are tied to the repo snapshot seen during that research pass. All findings integrated into one queue must reference the same snapshot identifier. If the repo state changes before queue freeze, re-run affected research.
-- If the user scoped cleanup to a broad subset such as multiple packages, keep the sweep inside that slice instead of silently widening to the whole repo.
-- Before editing, the active writer must re-check every claimed file and directly affected module boundary against the current tree.
-- If another pass changed a claimed file or any upstream/downstream dependency a reasonable reviewer could see as affecting the finding, re-research before editing.
+- Every finding in one queue comes from one research pass on one tree state. If the tree changes before the queue freezes, re-research the affected areas.
+- If the user scoped cleanup to a subset (e.g., specific packages), keep the sweep inside that slice; do not silently widen to the whole repo.
+- Before editing, the active writer re-checks every claimed file and directly affected module boundary against the current tree (`git diff HEAD -- <file>`).
+- If another pass changed a claimed file or any upstream/downstream dependency a reasonable reviewer could tie to the finding, re-research before editing.
 - If two areas need the same file, serialize them and hand off only after validation.
-- If a file contains unrelated local edits, cleanup is no longer automatically SAFE.
+- A file with unrelated local edits is no longer automatically `SAFE`.
 
 Key definitions:
 
-- **Baseline snapshot ID**: the sha256 computed in Preflight. Two findings that reference different IDs cannot be integrated into the same queue.
-- **Usable findings**: output that passes the Subagent Output Schema, with concrete evidence and an actionable ranked recommendation, or an explicit `NO_CHANGES` status with a reason. Boilerplate without evidence is unusable.
-- **Reversible unit**: a persisted patch (`git diff > /tmp/pass-N.patch`) or temporary commit on a feature branch that can be applied or reverted mechanically. A mental undo plan is not enough.
-- **Frozen queue item**: one cleanup recommendation with all of the following: cleanup area, exact files or modules, evidence, intended edit scope, confidence tier, and validation impact. `Clean up module X` is not a valid queue item.
-- **Cross-language boundary file**: any file whose content is generated from or binds to a different language's type system. Includes OpenAPI/Swagger generated types, gRPC/Protobuf stubs, FFI bindings, and IDL-generated code.
+- **Usable finding**: concrete evidence plus an actionable, tier-tagged recommendation, or an explicit `NO_CHANGES` with a reason. Boilerplate without evidence is unusable.
+- **Checkpoint (reversible unit)**: a saved patch (`git diff > /tmp/pass-N.patch`) taken after each write pass so the pass can be undone mechanically. A mental undo plan is not enough. These checkpoints are scratch — the phase still produces exactly one retained commit. Because passes stack, undoing pass N means restoring the checkpoint taken before it.
+- **Frozen queue item**: a recommendation carrying all of: cleanup area, exact files or modules, evidence, intended edit scope, confidence tier, and validation impact. `Clean up module X` is not a valid item.
+- **Cross-language boundary file**: any file generated from or binding to another language's type system — OpenAPI/Swagger types, gRPC/Protobuf stubs, FFI bindings, IDL-generated code.
 
-**Proof of hunk-level isolation** (exact commands, not eyeballing):
+**Default for a file with unrelated edits: exclude it from this cleanup pass.** That is almost always the right call. Only if removing that file's cleanup item would clearly lose value should you prove hunk-level isolation first — with commands, not eyeballing:
 
 ```sh
-# Step 1 — capture baseline diffs BEFORE any cleanup edit
-git diff HEAD -- <file> > /tmp/baseline-unstaged.diff
-git diff --cached -- <file> > /tmp/baseline-staged.diff
+# 1. Capture the baseline diff BEFORE any cleanup edit.
+git diff HEAD -- <file> > /tmp/baseline.diff
 
-# Step 2 — apply the cleanup edit
-
-# Step 3 — capture current diff
+# 2. Apply the cleanup edit, then re-diff.
 git diff HEAD -- <file> > /tmp/current.diff
 
-# Step 4 — verify isolation
-# /tmp/current.diff MUST contain every hunk from /tmp/baseline-unstaged.diff
-# unchanged, plus only new cleanup hunks. If any baseline hunk is missing
-# or modified, isolation failed.
-
-# Step 5 — to commit only cleanup hunks
-git add -p <file>                  # interactively select only cleanup hunks
-git diff --cached -- <file>        # must show only cleanup changes
-git diff -- <file>                 # must equal /tmp/baseline-unstaged.diff exactly
+# 3. /tmp/current.diff MUST contain every hunk from /tmp/baseline.diff
+#    unchanged, plus only new cleanup hunks. If any baseline hunk is
+#    missing or altered, the cleanup edit absorbed unrelated work —
+#    revert via the checkpoint and exclude the file.
 ```
 
-If step 4 fails, the cleanup edit absorbed unrelated work. Revert via the reversible unit and exclude the file from cleanup.
+Committing only the cleanup hunks from a mixed file requires hunk-level staging (`git add -p`), which is error-prone for an automated agent and unavailable in some harnesses. **Prefer excluding the file.** If you must split hunks, after staging verify that `git diff --cached -- <file>` shows only cleanup changes and `git diff -- <file>` still equals `/tmp/baseline.diff` exactly.
