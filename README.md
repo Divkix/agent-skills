@@ -37,12 +37,14 @@ skills/
 │       └── platform-checks.md
 ├── brand-naming/
 │   ├── SKILL.md      # Skill definition (for AI agents)
+│   ├── README.md     # Human documentation
 │   └── references/   # Supporting docs for the skill
 │       ├── sound-symbolism.md
 │       ├── naming-rules.md
 │       └── creative-territories.md
 ├── exhaustive-site-audit/
-│   └── SKILL.md      # Skill definition (for AI agents)
+│   ├── SKILL.md      # Skill definition (for AI agents)
+│   └── README.md     # Human documentation
 └── ...
 ```
 
