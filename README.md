@@ -18,6 +18,7 @@ npx skills add divkix/agent-skills --skill no-comments
 | [exhaustive-site-audit](./skills/exhaustive-site-audit/) | Exhaustive black-box QA and adversarial dogfood audit of a running website using agent-browser |
 | [first-principle](./skills/first-principle/) | Interrogate finished work from first principles — challenge assumptions, delete, simplify |
 | [no-comments](./skills/no-comments/) | Delete comments by fixing the code that needed them — hostile review, root-cause fixes, constraint encoding |
+| [seo-plays](./skills/seo-plays/) | Free, repeatable SEO plays (query mining, internal linking, AI crawler check) for any site with an OpenSEO project, run from the site's repo |
 
 ## Repository Structure
 
@@ -36,6 +37,10 @@ skills/
 ├── no-comments/
 │   ├── SKILL.md      # Skill definition (for AI agents)
 │   └── README.md     # Human documentation
+├── seo-plays/
+│   ├── SKILL.md      # Skill definition (for AI agents)
+│   ├── README.md     # Human documentation
+│   └── plays/        # One file per play
 └── ...
 ```
 
@@ -44,6 +49,8 @@ skills/
 These skills work with any AI coding agent that supports the universal skill format, including OpenCode, Claude Code, GitHub Copilot CLI, and others.
 
 `exhaustive-site-audit` additionally requires the `agent-browser` CLI to be installed on the system.
+
+`seo-plays` requires the OpenSEO MCP server with Google Search Console connected; the Cloudflare MCP server is optional.
 
 ## See Also
 
