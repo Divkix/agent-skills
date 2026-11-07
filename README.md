@@ -17,6 +17,7 @@ npx skills add divkix/agent-skills --skill no-comments
 | [brand-naming](./skills/brand-naming/) | Generate viral, memorable brand names using Lexicon Branding's sound-symbolism methodology |
 | [exhaustive-site-audit](./skills/exhaustive-site-audit/) | Exhaustive black-box QA and adversarial dogfood audit of a running website using agent-browser |
 | [first-principle](./skills/first-principle/) | Interrogate finished work from first principles — challenge assumptions, delete, simplify |
+| [first-run-personas](./skills/first-run-personas/) | Launch QA through five first-time-user personas in parallel browsers; friction ranked by how many personas hit it |
 | [no-comments](./skills/no-comments/) | Delete comments by fixing the code that needed them — hostile review, root-cause fixes, constraint encoding |
 | [seo-plays](./skills/seo-plays/) | Free, repeatable SEO plays (query mining, internal linking, AI crawler check) for any site with an OpenSEO project, run from the site's repo |
 
@@ -34,6 +35,10 @@ skills/
 ├── exhaustive-site-audit/
 │   ├── SKILL.md      # Skill definition (for AI agents)
 │   └── README.md     # Human documentation
+├── first-run-personas/
+│   ├── SKILL.md      # Skill definition (for AI agents)
+│   ├── README.md     # Human documentation
+│   └── scripts/      # slow-3g.mjs network throttle
 ├── no-comments/
 │   ├── SKILL.md      # Skill definition (for AI agents)
 │   └── README.md     # Human documentation
@@ -49,6 +54,8 @@ skills/
 These skills work with any AI coding agent that supports the universal skill format, including OpenCode, Claude Code, GitHub Copilot CLI, and others.
 
 `exhaustive-site-audit` additionally requires the `agent-browser` CLI to be installed on the system.
+
+`first-run-personas` requires the `agent-browser` CLI and Node 22+.
 
 `seo-plays` requires the OpenSEO MCP server with Google Search Console connected; the Cloudflare MCP server is optional.
 
