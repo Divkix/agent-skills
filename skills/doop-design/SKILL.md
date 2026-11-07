@@ -1,9 +1,9 @@
 ---
-name: doop-variants
+name: doop-design
 description: Design screens on an app's Doop canvas and keep it at four frames per screen (desktop light, desktop dark, phone, phone dark) from one hand-edited desktop light master, 1440 wide, that adapts to phone and takes every colour from the canvas tokens; the sync generates the dark and phone copies, and the prototype is click-tested locally. Use whenever asked to design, mock up, redesign, add or edit a screen or page on a Doop canvas whose app repo has `.doop/config.json` or ` · dark` / ` · phone` copies, to "sync the Doop copies", generate dark or phone versions, click-test or crawl a Doop prototype, or set up a new app's canvas this way.
 ---
 
-# Doop variants
+# Doop design
 
 Per screen only the desktop light **master** (1440 wide) is edited by hand. `scripts/doop_sync.py` generates ` · dark`, ` · phone` and ` · phone · dark` from it; `scripts/e2e.py` exports the canvas and clicks through it in a local browser. Each app keeps its own settings in its repo under `.doop/`.
 

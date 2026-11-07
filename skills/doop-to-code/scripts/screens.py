@@ -1,6 +1,6 @@
 """Find the Doop frames behind the screens a user names, flag ones edited too recently, and keep the app's build stamp.
 
-Runs inside omp's Python eval with doop-variants' scripts on sys.path (SKILL.md, Setup):
+Runs inside omp's Python eval with doop-design's scripts on sys.path (SKILL.md, Setup):
 
     found, unknown = await screens.find(cfg, call, read, ['Home', 'Pricing'])
     todo = await screens.changed(cfg, call, read)  # what changed on Doop since the last build
@@ -26,8 +26,8 @@ import json
 import pathlib
 import sys
 
-# doop-variants is installed beside this skill; resolve() follows a symlinked install back to the real folder
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / 'doop-variants' / 'scripts'))
+# doop-design is installed beside this skill; resolve() follows a symlinked install back to the real folder
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / 'doop-design' / 'scripts'))
 import doop_sync as ds  # noqa: E402
 
 

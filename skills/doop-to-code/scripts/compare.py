@@ -5,7 +5,7 @@ usage: python3 -I compare.py URL FRAME.html [--only light-1440,dark-390] [--sess
        python3 -I compare.py --selftest
 
 FRAME.html is a frame saved with doop_sync.pull (tokens.css beside it). The Doop side renders exactly like
-doop-variants' preview.py (dark = data-doop-theme on <html>, phone = 390 wide); the app side loads URL with the
+doop-design's preview.py (dark = data-doop-theme on <html>, phone = 390 wide); the app side loads URL with the
 browser's colour scheme set to the variant's, so an app that follows the system theme switches with it. Both sides
 are measured with CSS animations, transitions and smooth scrolling off, in the same browser.
 Prints per variant:
@@ -32,8 +32,8 @@ import tempfile
 from collections import defaultdict
 from difflib import SequenceMatcher
 
-# doop-variants is installed beside this skill; resolve() follows a symlinked install back to the real folder
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / 'doop-variants' / 'scripts'))
+# doop-design is installed beside this skill; resolve() follows a symlinked install back to the real folder
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / 'doop-design' / 'scripts'))
 import preview  # noqa: E402
 
 GAP = 24

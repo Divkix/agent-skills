@@ -2,7 +2,7 @@
 
 Turns screens you designed on a [Doop](https://doop.design) canvas into your app's real code. You name the screens; the agent rebuilds each one with the app's own components and colours (it never pastes Doop's HTML), then measures the running app against the Doop design in all four versions (desktop and phone, light and dark) and keeps fixing until the numbers match. The work lands on a feature branch, never on `main`.
 
-It builds on [doop-variants](../doop-variants/): that skill keeps the canvas in shape, this one brings the canvas into the code.
+It builds on [doop-design](../doop-design/): that skill designs the canvas and keeps it in shape, this one brings the canvas into the code.
 
 ## Files
 
@@ -15,15 +15,14 @@ It builds on [doop-variants](../doop-variants/): that skill keeps the canvas in 
 
 ## Setup
 
-1. **Install this skill and doop-variants side by side** (the scripts reuse doop-variants' code from the folder next to this one):
+1. **Install this skill and doop-design together** (the scripts reuse doop-design's code from the folder next to this one):
 
    ```bash
-   ln -s ~/GitHub/agent-skills/skills/doop-variants ~/.agents/skills/doop-variants
-   ln -s ~/GitHub/agent-skills/skills/doop-to-code ~/.agents/skills/doop-to-code
+   pnpx skills add -g Divkix/agent-skills --skill doop-design doop-to-code
    ```
 
 2. **Use [omp](https://github.com/can1357/oh-my-pi) with the Doop MCP server connected**, and install [`agent-browser`](https://github.com/vercel-labs/agent-browser).
-3. **The app repo needs `.doop/config.json`** (the doop-variants setup writes it), and the app must run locally.
+3. **The app repo needs `.doop/config.json`** (the doop-design setup writes it), and the app must run locally.
 
 ## How to use it
 
@@ -43,7 +42,7 @@ You don't need to mark screens "ready for dev" on Doop first; asking is enough.
 ## Where it fits
 
 1. Design the whole app on Doop as desktop light screens (the "masters"), and review them.
-2. Run [doop-variants](../doop-variants/) to make the dark and phone versions, and review all four on Doop. Anything that looks wrong gets fixed in the master, then synced again.
+2. Run [doop-design](../doop-design/) to make the dark and phone versions, and review all four on Doop. Anything that looks wrong gets fixed in the master, then synced again.
 3. Run this skill to build the app from the canvas.
 
 A later design change goes the same way: edit the master, sync, then ask for "what changed on Doop since the last build".

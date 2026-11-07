@@ -1,6 +1,6 @@
-# Doop Variants Skill
+# Doop Design Skill
 
-Keeps a [Doop](https://doop.design) design canvas at four frames per screen (desktop light, desktop dark, phone light, phone dark) while you only ever edit one: the desktop light "master". A sync script builds the other three from it, wires the theme switch and the links of each version, and refuses to overwrite a copy someone edited by hand. A click-test script then walks through the prototype in a local browser, in all four versions.
+Designs screens on a [Doop](https://doop.design) canvas and keeps it at four frames per screen (desktop light, desktop dark, phone light, phone dark) while you only ever edit one: the desktop light "master", which adapts to phone. A sync script builds the other three from it, wires the theme switch and the links of each version, and refuses to overwrite a copy someone edited by hand. A click-test script then walks through the prototype in a local browser, in all four versions.
 
 ## Files
 
@@ -15,10 +15,10 @@ Keeps a [Doop](https://doop.design) design canvas at four frames per screen (des
 
 ## Setup
 
-1. **Install the skill.** Either `npx skills add divkix/agent-skills --skill doop-variants`, or symlink it to keep it updating with this repo:
+1. **Install the skill** from GitHub:
 
    ```bash
-   ln -s ~/GitHub/agent-skills/skills/doop-variants ~/.agents/skills/doop-variants
+   pnpx skills add -g Divkix/agent-skills --skill doop-design
    ```
 
 2. **Use [omp](https://github.com/can1357/oh-my-pi) with the Doop MCP server connected.** The scripts call Doop from omp's Python cell, so agents without a Python cell that can reach MCP tools can't run them.
@@ -42,10 +42,10 @@ I changed the Home master on Doop, sync the copies
 design a pricing page on Doop
 add a pricing screen to the Doop canvas, with all four versions
 click-test the Doop prototype
-set up doop variants for this repo, canvas https://doop.design/c/<id>
+set up doop-design for this repo, canvas https://doop.design/c/<id>
 ```
 
-Or start it by name: `/skill:doop-variants` (omp).
+Or start it by name: `/skill:doop-design` (omp).
 
 Every change follows the same loop: edit the master (in a local file, previewed in all four versions), sync, check the sync now has nothing left to do, then click-test and screenshot.
 
