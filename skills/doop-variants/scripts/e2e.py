@@ -151,6 +151,8 @@ class Harness:
         if self.server:
             self.server.shutdown(); self.server.server_close(); self.server = None
         shutil.rmtree(self.dir, ignore_errors=True)
+        try: self.dir.parent.rmdir()  # only when no other app's export is still there
+        except OSError: pass
 
     # ------------------------------------------------------------ browser
     def ab(self, *args, timeout=30):
