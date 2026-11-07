@@ -15,7 +15,7 @@ npx skills add divkix/agent-skills --skill no-comments
 | Skill | Description |
 |-------|-------------|
 | [brand-naming](./skills/brand-naming/) | Generate viral, memorable brand names using Lexicon Branding's sound-symbolism methodology |
-| [doop-to-code](./skills/doop-to-code/) | Build Doop canvas screens into an app's real code, then screenshot the app beside each design in all four versions until they match |
+| [doop-to-code](./skills/doop-to-code/) | Build Doop canvas screens into an app's real code, then measure the app against each design (differing pixels, text size, font, colour and position) in all four versions until they match |
 | [doop-variants](./skills/doop-variants/) | Keep a Doop canvas at desktop/phone × light/dark from one hand-edited master per screen, and click-test its prototype locally |
 | [exhaustive-site-audit](./skills/exhaustive-site-audit/) | Exhaustive black-box QA and adversarial dogfood audit of a running website using agent-browser |
 | [first-principle](./skills/first-principle/) | Interrogate finished work from first principles — challenge assumptions, delete, simplify |

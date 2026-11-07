@@ -1,6 +1,6 @@
 # Doop to Code Skill
 
-Turns screens you designed on a [Doop](https://doop.design) canvas into your app's real code. You name the screens; the agent rebuilds each one with the app's own components and colours (it never pastes Doop's HTML), then screenshots the running app next to the Doop design in all four versions (desktop and phone, light and dark) and keeps fixing until they match. The work lands on a feature branch, never on `main`.
+Turns screens you designed on a [Doop](https://doop.design) canvas into your app's real code. You name the screens; the agent rebuilds each one with the app's own components and colours (it never pastes Doop's HTML), then measures the running app against the Doop design in all four versions (desktop and phone, light and dark) and keeps fixing until the numbers match. The work lands on a feature branch, never on `main`.
 
 It builds on [doop-variants](../doop-variants/): that skill keeps the canvas in shape, this one brings the canvas into the code.
 
@@ -10,7 +10,7 @@ It builds on [doop-variants](../doop-variants/): that skill keeps the canvas in 
 |---|---|---|
 | `SKILL.md` | The find → build → compare → ship steps for the agent. | Yes |
 | `scripts/screens.py` | Finds the Doop frames behind the screen names you give, flags any edited in the last 10 minutes, and keeps the build stamp (which Doop version each screen was built from). `python3 screens.py` runs its self-check. | When building |
-| `scripts/compare.py` | Screenshots the running app beside the Doop frame in the four versions and puts them side by side. | When checking |
+| `scripts/compare.py` | Measures the running app against the Doop frame in the four versions: how many pixels differ in each screen-high slice, and each text whose size, font, colour, position or wording differs. Also saves side-by-side pictures. `python3 compare.py --selftest` checks the checker. | When checking |
 | `README.md` | Documentation for humans. You're reading it. | No |
 
 ## Setup
@@ -50,6 +50,7 @@ A later design change goes the same way: edit the master, sync, then ask for "wh
 
 ## Notes
 
+- **Numbers, not eyeballing.** The agent doesn't judge the match by looking at two screenshots: it counts the differing pixels and reads each text's real size, font, colour and position from both pages, then fixes from the top down. It looks at the pictures only for what numbers can't see, like a wrong photo. A difference it can't fix or explain goes to you.
 - **Shared parts come first.** The header, footer, fonts and colours show on every page, so the agent builds them before any screen, in their own commit. Tell it if you want one kept as it is.
 - **Recently edited screens wait.** If a screen changed on Doop in the last 10 minutes, the agent asks before building, so it doesn't copy a half-finished design.
 - **Every build leaves a reference point.** The app repo's `.doop/built.json` records which version of each Doop screen the code was built from, and it's committed with that screen's code. So the agent can tell exactly which screens changed on Doop since, and the commit shows when each one was last built. It only notes real design edits; moving a frame around on the canvas doesn't count.

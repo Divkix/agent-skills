@@ -55,6 +55,8 @@ Sources: [Figma MCP rules](https://developers.figma.com/docs/figma-mcp-server/ad
 
 ## What to change in doop-to-code
 
+Shipped 2026-11-07 in `skills/doop-to-code/scripts/compare.py` and its SKILL.md: 1 (per-slice pixel diff), 2 (text measured on both pages, paired by wording, without a selector map), 3 (colours from `get_tokens`), 4 (animations off, same session, font failures reported, `--selftest`) and 5.
+
 1. **Diff, don't only look.** In `compare.py`, after the two screenshots, run `agent-browser diff screenshot` per variant and print `differentPixels` and the mismatch % beside the heights; give the agent the diff image. Compare equal-sized viewport tiles (or the region above the first height difference), since a page that's 40 px taller shifts everything below it. Fix from the top down.
 2. **Numbers for flagged regions.** For headings, buttons and cards in a red region, read `get box` / `get styles` on both pages and print expected, actual and the difference. Pair by visible text. For the few textless parts that matter (icons, image boxes), keep a small selector map instead of guessing.
 3. **Take colours and sizes from `get_tokens`** (Tailwind format) rather than retyping hex values from the HTML.
