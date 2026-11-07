@@ -39,6 +39,7 @@ Open your agent inside the app's repo and ask in plain words:
 
 ```text
 I changed the Home master on Doop, sync the copies
+design a pricing page on Doop
 add a pricing screen to the Doop canvas, with all four versions
 click-test the Doop prototype
 set up doop variants for this repo, canvas https://doop.design/c/<id>

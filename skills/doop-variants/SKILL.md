@@ -1,6 +1,6 @@
 ---
 name: doop-variants
-description: Keep a Doop design canvas at four frames per screen (desktop light, desktop dark, phone, phone dark) from one hand-edited master, and click-test its prototype locally. Use when editing, adding or syncing screens on a Doop canvas that has ` · dark` / ` · phone` copies, when asked to "sync the Doop copies", generate dark or phone versions, click-test or crawl a Doop prototype, or set up a new app's canvas this way.
+description: Design screens on an app's Doop canvas and keep it at four frames per screen (desktop light, desktop dark, phone, phone dark) from one hand-edited desktop light master, 1440 wide, that adapts to phone and takes every colour from the canvas tokens; the sync generates the dark and phone copies, and the prototype is click-tested locally. Use whenever asked to design, mock up, redesign, add or edit a screen or page on a Doop canvas whose app repo has `.doop/config.json` or ` · dark` / ` · phone` copies, to "sync the Doop copies", generate dark or phone versions, click-test or crawl a Doop prototype, or set up a new app's canvas this way.
 ---
 
 # Doop variants
@@ -43,6 +43,8 @@ import sys; sys.path.insert(0, '<skill dir>/scripts'); import doop_sync, e2e
 call = lambda name, args: getattr(tool, 'mcp__doop_' + name)(args)
 APP = '~/GitHub/<repo>'; cfg = doop_sync.load(APP)
 ```
+
+**New screen:** `create_frame` 1440 wide on the app's page, named by the Names rule, then build it as a master with the steps below (pull the blank frame and write the whole design into the file), then sync with `--create`. The design is one page that adapts to phone; never a separate phone frame, except for phone-only screens.
 
 **Edit a master** (frames run to 50 KB; never paste them through the chat):
 
