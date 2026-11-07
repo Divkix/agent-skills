@@ -21,7 +21,7 @@ APP = '~/GitHub/<repo>'; cfg = doop_sync.load(APP)
 
 Check the checker once per session: `python3 -I <skill dir>/scripts/compare.py --selftest` must print `compare selftest ok`.
 
-**Run the app** when nothing answers on its port: start it as a named background service with `pnpm run local-dev` when the app's `package.json` has that script (local Postgres with sample data; the app's README names its port and a test sign-in). Otherwise use its dev script under `env -u CI`: with `CI` set, Alchemy ignores the saved Cloudflare login. Stop the service at the end if you started it.
+**Run the app** when nothing answers on its port: start it as a named background service with `pnpm run local-dev` when the app's `package.json` has that script (local Postgres with sample data; the app's README names its port and a test sign-in). Otherwise use its dev script under `env -u CI`: with `CI` set, Alchemy ignores the saved Cloudflare login. Stop the service at the end if you started it. Apps can share a port, so when something already answers, check it's this repo: `lsof -a -d cwd -Fn -p "$(lsof -tiTCP:<port> -sTCP:LISTEN)"` must print this repo's path. If it's another app, ask the user before stopping it; never measure it.
 
 ## Steps
 
