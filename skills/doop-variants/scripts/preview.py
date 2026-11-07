@@ -34,6 +34,22 @@ def ab(session, *args, timeout=90):
     return (r.stdout + r.stderr).strip()
 
 
+def shoot(session, url, w, png):
+    """Full-page screenshot of url at width w once webfonts load; returns {h, w, png}: content height and scrollWidth."""
+    ab(session, 'set', 'viewport', str(w), '844' if w == 390 else '900')  # phone frames are 844 tall; Doop's 100vh = frame height
+    for _ in range(2):  # on a just-launched browser the viewport change aborts the next navigation
+        if 'Navigation failed' not in ab(session, 'open', url):
+            break
+    ab(session, 'wait', '--load', 'networkidle', timeout=40)
+    m = ab(session, 'eval', 'document.fonts.ready.then(() => new Promise(r => requestAnimationFrame(() => r(JSON.stringify({h: document.documentElement.scrollHeight, w: document.documentElement.scrollWidth})))))')
+    ab(session, 'screenshot', '--full', str(png))
+    try:
+        dims = json.loads(json.loads(m) if m.startswith('"') else m)
+    except Exception:
+        dims = {'raw': m[:200]}
+    return {**dims, 'png': png}
+
+
 def actions(h):
     return Counter(a or b or c for a, b, c in ACT.findall(h))
 
@@ -69,19 +85,8 @@ def main(argv):
             dark, w = VARIANTS[v]
             f = pathlib.Path(tmp) / f'{v}.html'
             f.write_text(variant_html(h, tk, dark))
-            ab(session, 'set', 'viewport', str(w), '844' if w == 390 else '900')  # phone frames are 844 tall; Doop's 100vh = frame height
-            for _ in range(2):  # on a just-launched browser the viewport change aborts the next navigation
-                if 'Navigation failed' not in ab(session, 'open', f.as_uri()):
-                    break
-            ab(session, 'wait', '--load', 'networkidle', timeout=40)
-            m = ab(session, 'eval', 'document.fonts.ready.then(() => new Promise(r => requestAnimationFrame(() => r(JSON.stringify({h: document.documentElement.scrollHeight, w: document.documentElement.scrollWidth})))))')
-            png = path.with_name(f'{path.stem}.{v}.png')
-            ab(session, 'screenshot', '--full', str(png))
-            try:
-                dims = json.loads(json.loads(m) if m.startswith('"') else m)
-            except Exception:
-                dims = {'raw': m[:200]}
-            print(f'{v}: height {dims.get("h")} | scrollWidth {dims.get("w")}{"  OVERFLOW" if dims.get("w", w) > w else ""} | {png}')
+            dims = shoot(session, f.as_uri(), w, path.with_name(f'{path.stem}.{v}.png'))
+            print(f'{v}: height {dims.get("h")} | scrollWidth {dims.get("w")}{"  OVERFLOW" if dims.get("w", w) > w else ""} | {dims["png"]}')
         ab(session, 'close')
     rep = lint(h, orig, toggles)
     for k, v in rep.items():
