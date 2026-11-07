@@ -11,13 +11,15 @@ Call Doop `get_guide` once before any Doop work, and use the config's `agent` as
 
 ## Setup
 
-Doop is reachable only from omp's Python eval. Setup cell, with the absolute path of this skill's `scripts/` folder (it loads doop-design's scripts from the sibling folder itself):
+Doop sits behind the MCP portal and is reachable only from omp's Python eval. Setup cell, with the absolute path of this skill's `scripts/` folder (it loads doop-design's scripts from the sibling folder itself):
 
 ```python
 import sys; sys.path.insert(0, '<skill dir>/scripts'); import screens, doop_sync
-call = lambda name, args: getattr(tool, 'mcp__doop_' + name)(args)
+call = doop_sync.portal(tool)
 APP = '~/GitHub/<repo>'; cfg = doop_sync.load(APP)
 ```
+
+Make every Doop call through `call(name, args)`: the portal cuts its responses near 24,000 characters, and `call` returns them whole (doop-design's "Doop quirks").
 
 Check the checker once per session: `python3 -I <skill dir>/scripts/compare.py --selftest` must print `compare selftest ok`.
 

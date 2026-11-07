@@ -21,7 +21,7 @@ Designs screens on a [Doop](https://doop.design) canvas and keeps it at four fra
    pnpx skills add -g Divkix/agent-skills --skill doop-design
    ```
 
-2. **Use [omp](https://github.com/can1357/oh-my-pi) with the Doop MCP server connected.** The scripts call Doop from omp's Python cell, so agents without a Python cell that can reach MCP tools can't run them.
+2. **Use [omp](https://github.com/can1357/oh-my-pi) with Doop behind your MCP portal** (code mode, `portal_codemode_execute`). The scripts call Doop from omp's Python cell, so agents without a Python cell that can reach MCP tools can't run them. The portal cuts long answers, so the scripts pack each one and rebuild the canvas list frame by frame: a sync of a 400-frame canvas takes about 3 minutes.
 3. **Install [`agent-browser`](https://github.com/vercel-labs/agent-browser)** for the click test and previews.
 
 ## Each app's settings

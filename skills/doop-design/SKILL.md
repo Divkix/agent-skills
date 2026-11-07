@@ -36,11 +36,11 @@ Call Doop `get_guide` once before any Doop work, and use the config's `agent` as
 
 ## Running it
 
-Doop is reachable only from omp's Python eval. Setup cell, with the absolute path of this skill's `scripts/` folder:
+Doop sits behind the MCP portal and is reachable only from omp's Python eval. Setup cell, with the absolute path of this skill's `scripts/` folder:
 
 ```python
 import sys; sys.path.insert(0, '<skill dir>/scripts'); import doop_sync, e2e
-call = lambda name, args: getattr(tool, 'mcp__doop_' + name)(args)
+call = doop_sync.portal(tool)
 APP = '~/GitHub/<repo>'; cfg = doop_sync.load(APP)
 ```
 
@@ -50,7 +50,7 @@ APP = '~/GitHub/<repo>'; cfg = doop_sync.load(APP)
 
 1. `await doop_sync.pull(cfg, call, read, fid, '/tmp/doop-edit/<fid>.orig.html')`, then copy it to `<fid>.html` and edit that file. `pull` writes `tokens.css` beside it.
 2. `python3 -I <skill dir>/scripts/preview.py /tmp/doop-edit/<fid>.html --app <repo> --orig /tmp/doop-edit/<fid>.orig.html` renders light/dark × 1440/390 PNGs and lints. Read the PNGs; iterate until `LINT OK` and no `OVERFLOW`.
-3. `await doop_sync.push(cfg, call, fid, path, height=<light-1440 height>)`, then `get_frame_screenshot` and fix what Doop's render shows.
+3. `await doop_sync.push(cfg, call, fid, path, height=<light-1440 height>)`, then `get_frame_screenshot` (it returns the frame's `image_url`, a PNG you can `read`) and fix what Doop's render shows.
 
 **Sync** after any master change:
 
@@ -74,5 +74,5 @@ APP = '~/GitHub/<repo>'; cfg = doop_sync.load(APP)
 
 - `get_frame_screenshot` sometimes renders before webfonts load (wider wrapping, clipped bottom): take another screenshot; never change layout or height for a fallback-font render.
 - HTTP 429: wait a few seconds; stay under about one call per second.
-- Large `get_canvas` / `get_frame` output is cut off in omp; the scripts follow its `Read artifact://N` pointer, so parse Doop JSON through `doop_sync._parse(result, read)` in your own cells too.
+- The portal cuts every response near 24,000 characters, and its `get_canvas` lists frames without `pageId`, `x`, `y` or `updatedAt`. `call(name, args)` returns whole results (gzipped in transit; `get_canvas` rebuilt from each frame's `get_frame`, about 20 s per 100 frames), so make every Doop call through it, and parse Doop JSON with `doop_sync._parse(result, read)`.
 - The hosted prototype player (`/c/<canvas>/proto`) needs a signed-in account, so automation can't click it; that's what the local harness is for.

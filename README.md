@@ -67,7 +67,7 @@ These skills work with any AI coding agent that supports the universal skill for
 
 `first-run-personas` requires the `agent-browser` CLI and Node 22+.
 
-`doop-design` and `doop-to-code` run inside [omp](https://github.com/can1357/oh-my-pi) with the Doop MCP server connected, and need the `agent-browser` CLI. `doop-to-code` also needs `doop-design` installed beside it.
+`doop-design` and `doop-to-code` run inside [omp](https://github.com/can1357/oh-my-pi) with Doop behind an MCP portal that has code mode (`portal_codemode_execute`), and need the `agent-browser` CLI. `doop-to-code` also needs `doop-design` installed beside it.
 
 `seo-plays` requires the OpenSEO MCP server with Google Search Console connected; the Cloudflare MCP server is optional.
 

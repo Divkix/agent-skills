@@ -21,7 +21,7 @@ It builds on [doop-design](../doop-design/): that skill designs the canvas and k
    pnpx skills add -g Divkix/agent-skills --skill doop-design doop-to-code
    ```
 
-2. **Use [omp](https://github.com/can1357/oh-my-pi) with the Doop MCP server connected**, and install [`agent-browser`](https://github.com/vercel-labs/agent-browser).
+2. **Use [omp](https://github.com/can1357/oh-my-pi) with Doop behind your MCP portal** (code mode, `portal_codemode_execute`), and install [`agent-browser`](https://github.com/vercel-labs/agent-browser).
 3. **The app repo needs `.doop/config.json`** (the doop-design setup writes it), and the app must run locally. An app with a `pnpm run local-dev` script gets started by the agent itself, with a local database and sample data.
 
 ## How to use it

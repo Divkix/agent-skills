@@ -4,10 +4,10 @@ Per screen only the desktop light master (1440) is edited by hand; ` · dark`, `
 generated from it. Phone-only screens (menus, drawers): `X · phone` is the hand-edited source, `X · phone · dark`
 is generated. Frames pair by name: base = name minus the variant suffix.
 
-Each app keeps its settings in its own repo at `.doop/config.json`. The Doop MCP is reachable only through the omp
-harness, so this runs inside omp's Python eval:
+Each app keeps its settings in its own repo at `.doop/config.json`. Doop sits behind the MCP portal, reachable only
+through the omp harness, so this runs inside omp's Python eval:
 
-    call = lambda name, args: getattr(tool, 'mcp__doop_' + name)(args)
+    call = doop_sync.portal(tool)
     await doop_sync.main(['~/GitHub/app'], call, read)                         # dry run: report only
     await doop_sync.main(['~/GitHub/app', '--write'], call, read)              # apply
     await doop_sync.main(['~/GitHub/app', '--create', '--write'], call, read)  # also add missing copies
@@ -22,7 +22,7 @@ unless --force. A master edit changes the wanted copy, not the copy, so it is ne
 
 `python3 doop_sync.py` runs the offline self-check.
 """
-import asyncio, hashlib, json, pathlib, re
+import asyncio, base64, gzip, hashlib, json, pathlib, re
 
 
 def load(app):
@@ -230,6 +230,71 @@ def _parse(r, read):
     return json.JSONDecoder().raw_decode(t[t.index('{'):])[0]
 
 
+# The portal's code mode cuts every response near 24,000 characters, and its get_canvas lists frames without
+# pageId, x, y or updatedAt. So each result is gzipped inside the sandbox and split across calls when it still
+# doesn't fit (each part reruns the Doop call), and get_canvas is rebuilt from every frame's get_frame.
+PORTAL = 'mcp__mcp_portal_portal_codemode_execute'
+PART = 23000
+JS_PACK = r"""
+const text = (r) => typeof r === 'string' ? r : Array.isArray(r) ? r.map((c) => c.text ?? '').join('\n') : JSON.stringify(r);
+const pack = async (s) => {
+  const b = new Uint8Array(await new Response(new Blob([s]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());
+  let bin = '';
+  for (let i = 0; i < b.length; i += 0x8000) bin += String.fromCharCode(...b.subarray(i, i + 0x8000));
+  const z = btoa(bin);
+  return JSON.stringify({ parts: Math.ceil(z.length / PART), z: z.slice(PART_I * PART, (PART_I + 1) * PART) });
+};
+"""
+JS_DETAILS = r"""
+const one = async (id) => {
+  for (let i = 0; ; i++) {
+    try {
+      const t = text(await codemode.doop_get_frame({ frame_id: id, agent_name: AGENT }));
+      const f = JSON.parse(t.slice(t.indexOf('{')));
+      delete f.html;
+      return f;
+    } catch (e) {
+      if (i === 3) throw e;
+      await new Promise((ok) => setTimeout(ok, 1500 * (i + 1)));
+    }
+  }
+};
+return JSON.stringify(await Promise.all(IDS.map(one)));
+"""
+
+
+async def _run(ex, body):
+    """The full text of the Doop result that JS `body` returns, run in the portal sandbox."""
+    parts = []
+    while True:
+        code = (f'async () => {{ const PART = {PART}, PART_I = {len(parts)};{JS_PACK}'
+                f'try {{ return await pack(text(await (async () => {{ {body} }})())); }}'
+                ' catch (e) { return JSON.stringify({ error: String(e?.message ?? e) }); } }')
+        r = json.loads(_text(await ex({'code': code})))
+        if 'error' in r:
+            raise RuntimeError(r['error'])
+        parts.append(r['z'])
+        if len(parts) == r['parts']:
+            return gzip.decompress(base64.b64decode(''.join(parts))).decode()
+
+
+def portal(tool):
+    """`call(name, args)` for Doop through the MCP portal's code mode, with whole results."""
+    ex = getattr(tool, PORTAL)
+
+    async def call(name, args):
+        body = f'return codemode.doop_{name}({json.dumps(args)});'
+        if name != 'get_canvas':
+            return {'text': await _run(ex, body)}
+        c = json.loads(await _run(ex, body))
+        ids, agent, frames = [f['id'] for f in c['frames']], json.dumps(args.get('agent_name')), []
+        for i in range(0, len(ids), 100):  # about 20 s per 100 frames
+            frames += json.loads(await _run(ex, f'const IDS = {json.dumps(ids[i:i + 100])}, AGENT = {agent};{JS_DETAILS}'))
+        return {'text': json.dumps({**c, 'frames': frames})}
+
+    return call
+
+
 async def _get_html(call, read, fid, agent):
     for wait in (2, 4, 6, None):
         try:
@@ -406,6 +471,33 @@ def selftest():
     css = '<style>.t [data-x="dark"]{color:red}</style>'
     assert wire(css + seg, roles, {'dark': 'D'}).startswith(css)  # CSS attribute selectors are never wired
     assert sizes(masters, po) == {'D': (1440, 900), 'P': (390, 2000), 'PD': (390, 2000), 'MPD': (390, 800)}
+
+    # portal: gzip parts reassemble, get_canvas carries each frame's get_frame details, errors raise
+    big = ''.join(hashlib.sha256(str(i).encode()).hexdigest() for i in range(1500))
+    brief = {'canvas': {'id': 'C'}, 'frames': [{'id': 'A', 'name': 'a'}, {'id': 'B', 'name': 'b'}]}
+    details = [{'id': 'A', 'pageId': 'p', 'x': 0, 'y': 0, 'updatedAt': 't'},
+               {'id': 'B', 'pageId': 'p', 'x': 1600, 'y': 0, 'updatedAt': 't'}]
+
+    class Tool:
+        async def mcp__mcp_portal_portal_codemode_execute(self, a):
+            code = a['code']
+            if 'doop_boom' in code:
+                return {'text': json.dumps({'error': 'boom failed'})}
+            s = json.dumps(details) if 'const IDS' in code else json.dumps(brief) if 'doop_get_canvas' in code else big
+            z = base64.b64encode(gzip.compress(s.encode(), mtime=0)).decode()
+            i = int(re.search(r'PART_I = (\d+)', code).group(1))
+            return {'text': json.dumps({'parts': -(-len(z) // PART), 'z': z[i * PART:(i + 1) * PART]})}
+
+    call = portal(Tool())
+    assert len(base64.b64encode(gzip.compress(big.encode()))) > 2 * PART
+    assert asyncio.run(call('get_frame', {'frame_id': 'A'}))['text'] == big
+    c = _parse(asyncio.run(call('get_canvas', {'canvas_id': 'C', 'agent_name': 'x'})), None)
+    assert c['canvas'] == {'id': 'C'} and c['frames'] == details, c
+    try:
+        asyncio.run(call('boom', {}))
+        raise AssertionError('portal error not raised')
+    except RuntimeError as e:
+        assert str(e) == 'boom failed'
     print('doop_sync selftest ok')
 
 
