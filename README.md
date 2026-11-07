@@ -15,7 +15,8 @@ npx skills add divkix/agent-skills --skill no-comments
 | Skill | Description |
 |-------|-------------|
 | [brand-naming](./skills/brand-naming/) | Generate viral, memorable brand names using Lexicon Branding's sound-symbolism methodology |
-| [doop-design](./skills/doop-design/) | Design screens on a Doop canvas as one desktop light master each, sync its dark and phone copies, and click-test the prototype locally |
+| [doop-design](./skills/doop-design/) | Design screens on a Doop canvas as one desktop light master each, or as options to pick from |
+| [doop-sync](./skills/doop-sync/) | Make the dark and phone copies of every Doop master, and click-test the prototype locally in all four versions |
 | [doop-to-code](./skills/doop-to-code/) | Build Doop canvas screens into an app's real code, then measure the app against each design (differing pixels, text size, font, colour and position) in all four versions until they match |
 | [exhaustive-site-audit](./skills/exhaustive-site-audit/) | Exhaustive black-box QA and adversarial dogfood audit of a running website using agent-browser |
 | [first-principle](./skills/first-principle/) | Interrogate finished work from first principles — challenge assumptions, delete, simplify |
@@ -37,7 +38,10 @@ skills/
 ├── doop-design/
 │   ├── SKILL.md      # Skill definition (for AI agents)
 │   ├── README.md     # Human documentation
-│   └── scripts/      # Variant sync, local click test, frame preview
+│   └── scripts/      # Doop access, variant sync, local click test, frame preview (shared by the Doop skills)
+├── doop-sync/
+│   ├── SKILL.md      # Skill definition (for AI agents)
+│   └── README.md     # Human documentation
 ├── doop-to-code/
 │   ├── SKILL.md      # Skill definition (for AI agents)
 │   ├── README.md     # Human documentation
@@ -67,7 +71,7 @@ These skills work with any AI coding agent that supports the universal skill for
 
 `first-run-personas` requires the `agent-browser` CLI and Node 22+.
 
-`doop-design` and `doop-to-code` run inside [omp](https://github.com/can1357/oh-my-pi) with Doop behind an MCP portal that has code mode (`portal_codemode_execute`), and need the `agent-browser` CLI. `doop-to-code` also needs `doop-design` installed beside it.
+`doop-design`, `doop-sync` and `doop-to-code` run inside [omp](https://github.com/can1357/oh-my-pi) with Doop behind an MCP portal that has code mode (`portal_codemode_execute`), and need the `agent-browser` CLI. `doop-sync` and `doop-to-code` also need `doop-design` installed beside them.
 
 `seo-plays` requires the OpenSEO MCP server with Google Search Console connected; the Cloudflare MCP server is optional.
 

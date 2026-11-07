@@ -5,7 +5,7 @@ description: Build screens from a Doop design canvas into an app's real code, th
 
 # Doop to code
 
-The user names screens; each becomes app code that matches its Doop frame. Approval on Doop is optional: the user's request is the go-ahead. The canvas follows the doop-design rules (read that skill's "Canvas rules"): per screen the desktop light master is the design, and its `@media (max-width:639px)` block is the phone layout; the dark and phone copies exist only to compare against.
+The user names screens; each becomes app code that matches its Doop frame. Approval on Doop is optional: the user's request is the go-ahead. The canvas follows the doop-design rules (read that skill's "Canvas rules"): per screen the desktop light master is the design, and its `@media (max-width:639px)` block is the phone layout; the dark and phone copies, made by doop-sync, exist only to compare against.
 
 Call Doop `get_guide` once before any Doop work, and use the config's `agent` as `agent_name` on every call.
 
@@ -29,6 +29,7 @@ Check the checker once per session: `python3 -I <skill dir>/scripts/compare.py -
 
 1. **Find.** `found, unknown = await screens.find(cfg, call, read, ['Home', 'Pricing'])`. A name matches a screen and all its states. Anything in `unknown`: show the user the screen list and ask; never guess. A row with `recent` was edited in the last 10 minutes, so someone may still be working on it: ask before building it.
    Asked for what changed on Doop (or for a whole redesign): `todo = await screens.changed(cfg, call, read)` compares the canvas with the app's build stamp `.doop/built.json`. Pass `todo['changed'] + todo['new']` to `find`; `tokens: True` means the canvas colours changed, so shared parts too; `gone` lists built screens no longer on the canvas: ask whether their routes go.
+   The copies must be in step with their masters, since step 6 measures against them: `rep = await doop_sync.main([APP, '--only', ','.join(r['source'] for r in found)], call, read)` must show no `writes`, `drift` or `missing` for these screens. Anything listed: stop and ask the user to run doop-sync first.
 2. **Pull** each row's `source` frame: `await doop_sync.pull(cfg, call, read, fid, '/tmp/doop-code/<repo>/<fid>.html')`.
 3. **Compare first**, before editing: run step 6 against the current app. Its numbers show what has to change.
 4. **Shared parts first.** The canvas is the finished design, so before any screen, build the header, footer, fonts and colour tokens it uses everywhere, the way step 5 builds a screen. Colours come from the canvas tokens, never from hex values in the frame's HTML: `await call('get_tokens', {'canvas_id': cfg['canvas_id'], 'agent_name': cfg['agent']})` lists each colour's light and dark value; match the app's own tokens to them by name (`--color-primary` is the app's primary). Shared parts change every page: give them their own commit, ahead of the screens, and check them on the first screen you compare. Leave one as it is only when the user says so.

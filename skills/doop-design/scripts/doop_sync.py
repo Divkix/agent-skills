@@ -2,7 +2,8 @@
 
 Per screen only the desktop light master (1440) is edited by hand; ` · dark`, ` · phone` and ` · phone · dark` are
 generated from it. Phone-only screens (menus, drawers): `X · phone` is the hand-edited source, `X · phone · dark`
-is generated. Frames pair by name: base = name minus the variant suffix.
+is generated. Frames pair by name: base = name minus the variant suffix. Frames named `Option <X> · …` are design
+options waiting for a pick: get_frames skips them, so no sync, click test or build ever sees them.
 
 Each app keeps its settings in its own repo at `.doop/config.json`. Doop sits behind the MCP portal, reachable only
 through the omp harness, so this runs inside omp's Python eval:
@@ -314,9 +315,13 @@ async def _write(call, name, args):
     return t
 
 
+OPTION = re.compile(r'Option [A-Z0-9]+ · ')
+
+
 async def get_frames(cfg, call, read):
     c = _parse(await call('get_canvas', {'canvas_id': cfg['canvas_id'], 'agent_name': cfg['agent']}), read)
-    return [f for f in c['frames'] if cfg['pages'] is None or f['pageId'] in cfg['pages']]
+    return [f for f in c['frames']
+            if (cfg['pages'] is None or f['pageId'] in cfg['pages']) and not OPTION.match(f['name'])]
 
 
 async def tokens_css(cfg, call):
@@ -471,6 +476,7 @@ def selftest():
     css = '<style>.t [data-x="dark"]{color:red}</style>'
     assert wire(css + seg, roles, {'dark': 'D'}).startswith(css)  # CSS attribute selectors are never wired
     assert sizes(masters, po) == {'D': (1440, 900), 'P': (390, 2000), 'PD': (390, 2000), 'MPD': (390, 800)}
+    assert OPTION.match('Option B · Pricing · annual - /pricing') and not OPTION.match('Options - /settings/options')
 
     # portal: gzip parts reassemble, get_canvas carries each frame's get_frame details, errors raise
     big = ''.join(hashlib.sha256(str(i).encode()).hexdigest() for i in range(1500))
