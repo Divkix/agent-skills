@@ -15,6 +15,7 @@ npx skills add divkix/agent-skills --skill no-comments
 | Skill | Description |
 |-------|-------------|
 | [brand-naming](./skills/brand-naming/) | Generate viral, memorable brand names using Lexicon Branding's sound-symbolism methodology |
+| [doop-variants](./skills/doop-variants/) | Keep a Doop canvas at desktop/phone × light/dark from one hand-edited master per screen, and click-test its prototype locally |
 | [exhaustive-site-audit](./skills/exhaustive-site-audit/) | Exhaustive black-box QA and adversarial dogfood audit of a running website using agent-browser |
 | [first-principle](./skills/first-principle/) | Interrogate finished work from first principles — challenge assumptions, delete, simplify |
 | [first-run-personas](./skills/first-run-personas/) | Launch QA through five first-time-user personas in parallel browsers; friction ranked by how many personas hit it |
@@ -32,6 +33,10 @@ skills/
 │       ├── sound-symbolism.md
 │       ├── naming-rules.md
 │       └── creative-territories.md
+├── doop-variants/
+│   ├── SKILL.md      # Skill definition (for AI agents)
+│   ├── README.md     # Human documentation
+│   └── scripts/      # Variant sync, local click test, frame preview
 ├── exhaustive-site-audit/
 │   ├── SKILL.md      # Skill definition (for AI agents)
 │   └── README.md     # Human documentation
@@ -56,6 +61,8 @@ These skills work with any AI coding agent that supports the universal skill for
 `exhaustive-site-audit` additionally requires the `agent-browser` CLI to be installed on the system.
 
 `first-run-personas` requires the `agent-browser` CLI and Node 22+.
+
+`doop-variants` runs inside [omp](https://github.com/can1357/oh-my-pi) with the Doop MCP server connected, and needs the `agent-browser` CLI.
 
 `seo-plays` requires the OpenSEO MCP server with Google Search Console connected; the Cloudflare MCP server is optional.
 
