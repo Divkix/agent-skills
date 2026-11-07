@@ -9,7 +9,7 @@ It builds on [doop-variants](../doop-variants/): that skill keeps the canvas in 
 | File | Purpose | Loaded at runtime? |
 |---|---|---|
 | `SKILL.md` | The find → build → compare → ship steps for the agent. | Yes |
-| `scripts/screens.py` | Finds the Doop frames behind the screen names you give, and flags any edited in the last 10 minutes. `python3 screens.py` runs its self-check. | When building |
+| `scripts/screens.py` | Finds the Doop frames behind the screen names you give, flags any edited in the last 10 minutes, and keeps the build stamp (which Doop version each screen was built from). `python3 screens.py` runs its self-check. | When building |
 | `scripts/compare.py` | Screenshots the running app beside the Doop frame in the four versions and puts them side by side. | When checking |
 | `README.md` | Documentation for humans. You're reading it. | No |
 
@@ -33,6 +33,7 @@ Open your agent inside the app's repo, start the app, and ask:
 redesign the app from Doop
 build Home and Pricing from Doop
 make the About page match its Doop design
+build what changed on Doop since the last build
 ```
 
 Or start it by name: `/skill:doop-to-code` (omp).
@@ -45,10 +46,11 @@ You don't need to mark screens "ready for dev" on Doop first; asking is enough.
 2. Run [doop-variants](../doop-variants/) to make the dark and phone versions, and review all four on Doop. Anything that looks wrong gets fixed in the master, then synced again.
 3. Run this skill to build the app from the canvas.
 
-A later design change goes the same way: edit the master, sync, build again.
+A later design change goes the same way: edit the master, sync, then ask for "what changed on Doop since the last build".
 
 ## Notes
 
 - **Shared parts come first.** The header, footer, fonts and colours show on every page, so the agent builds them before any screen, in their own commit. Tell it if you want one kept as it is.
 - **Recently edited screens wait.** If a screen changed on Doop in the last 10 minutes, the agent asks before building, so it doesn't copy a half-finished design.
+- **Every build leaves a reference point.** The app repo's `.doop/built.json` records which version of each Doop screen the code was built from, and it's committed with that screen's code. So the agent can tell exactly which screens changed on Doop since, and the commit shows when each one was last built. It only notes real design edits; moving a frame around on the canvas doesn't count.
 - **Nothing is merged for you.** Each screen is its own commit on a feature branch; the agent pushes and opens a pull request only when you ask.
