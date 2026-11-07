@@ -30,6 +30,7 @@ It builds on [doop-variants](../doop-variants/): that skill keeps the canvas in 
 Open your agent inside the app's repo, start the app, and ask:
 
 ```text
+redesign the app from Doop
 build Home and Pricing from Doop
 make the About page match its Doop design
 ```
@@ -38,8 +39,16 @@ Or start it by name: `/skill:doop-to-code` (omp).
 
 You don't need to mark screens "ready for dev" on Doop first; asking is enough.
 
+## Where it fits
+
+1. Design the whole app on Doop as desktop light screens (the "masters"), and review them.
+2. Run [doop-variants](../doop-variants/) to make the dark and phone versions, and review all four on Doop. Anything that looks wrong gets fixed in the master, then synced again.
+3. Run this skill to build the app from the canvas.
+
+A later design change goes the same way: edit the master, sync, build again.
+
 ## Notes
 
-- **Shared parts come first, and only with your OK.** If the design's header, footer, fonts or colours differ from the app, changing them changes every page, so the agent lists them and asks before touching them.
+- **Shared parts come first.** The header, footer, fonts and colours show on every page, so the agent builds them before any screen, in their own commit. Tell it if you want one kept as it is.
 - **Recently edited screens wait.** If a screen changed on Doop in the last 10 minutes, the agent asks before building, so it doesn't copy a half-finished design.
 - **Nothing is merged for you.** Each screen is its own commit on a feature branch; the agent pushes and opens a pull request only when you ask.
