@@ -22,11 +22,11 @@ It builds on [doop-design](../doop-design/): that skill designs the canvas and k
    ```
 
 2. **Use [omp](https://github.com/can1357/oh-my-pi) with the Doop MCP server connected**, and install [`agent-browser`](https://github.com/vercel-labs/agent-browser).
-3. **The app repo needs `.doop/config.json`** (the doop-design setup writes it), and the app must run locally.
+3. **The app repo needs `.doop/config.json`** (the doop-design setup writes it), and the app must run locally. An app with a `pnpm run local-dev` script gets started by the agent itself, with a local database and sample data.
 
 ## How to use it
 
-Open your agent inside the app's repo, start the app, and ask:
+Open your agent inside the app's repo and ask:
 
 ```text
 redesign the app from Doop

@@ -21,6 +21,8 @@ APP = '~/GitHub/<repo>'; cfg = doop_sync.load(APP)
 
 Check the checker once per session: `python3 -I <skill dir>/scripts/compare.py --selftest` must print `compare selftest ok`.
 
+**Run the app** when nothing answers on its port: start it as a named background service with `pnpm run local-dev` when the app's `package.json` has that script (local Postgres with sample data; the app's README names its port and a test sign-in). Otherwise use its dev script under `env -u CI`: with `CI` set, Alchemy ignores the saved Cloudflare login. Stop the service at the end if you started it.
+
 ## Steps
 
 1. **Find.** `found, unknown = await screens.find(cfg, call, read, ['Home', 'Pricing'])`. A name matches a screen and all its states. Anything in `unknown`: show the user the screen list and ask; never guess. A row with `recent` was edited in the last 10 minutes, so someone may still be working on it: ask before building it.
